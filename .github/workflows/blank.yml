@@ -14,7 +14,7 @@ jobs:
           cache: gradle
       - name: Configure git
         run: git config --global user.email admin@qtpc.tech && git config --global user.name QuanTrieuPCYT
-      - name: Apply Patches
+      - name: Build
         run: |
           ./gradlew -Dorg.gradle.jvmargs="-Dfile.encoding=UTF-8 -Dgraal.CompilerConfiguration=community -Dgraal.UsePriorityInlining=true -Dgraal.Vectorization=true -Dgraal.OptDuplication=true -Dgraal.SpeculativeGuardMovement=true -Dgraal.WriteableCodeCache=true --add-modules jdk.incubator.vector" build --stacktrace --no-daemon
       - name: Archive artifact
