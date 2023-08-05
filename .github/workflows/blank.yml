@@ -1,0 +1,24 @@
+name: Panilla Build
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '-s')"
+    steps:
+      - uses: actions/checkout@v3
+      - name: JDK 17 Configuration
+        uses: graalvm/setup-graalvm@v1
+        with:
+          version: "latest"
+          java-version: 17
+          cache: gradle
+      - name: Configure git
+        run: git config --global user.email admin@qtpc.tech && git config --global user.name QuanTrieuPCYT
+      - name: Apply Patches
+        run: |
+          ./gradlew -Dorg.gradle.jvmargs="-Dfile.encoding=UTF-8 -Dgraal.CompilerConfiguration=community -Dgraal.UsePriorityInlining=true -Dgraal.Vectorization=true -Dgraal.OptDuplication=true -Dgraal.SpeculativeGuardMovement=true -Dgraal.WriteableCodeCache=true --add-modules jdk.incubator.vector" build --stacktrace --no-daemon
+      - name: Archive artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-artifact
+          path: target/bukkit/*.jar
